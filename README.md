@@ -8,3 +8,12 @@ Idea:
 5. Print results
 
 Is it satisfy running time output? <-I think so? Merging an array is probably a log n, and since there are m arrays, you get mlog n.
+
+
+Edit:
+Idea:
+1. Read the array from binary file.
+2. Put them into m arrays consisting of n elements
+3. for i=1 to m-1, Use Merge function in MergeSort to Merge all m arrays
+4. Find K with arr[k-1]
+5. Print results
