@@ -4,6 +4,27 @@
 
 using namespace std;
 
+//merging two sorted arrays into one sorted arrays
+void merge(int arr1[], int arr2[], int arr3[]){
+  int x = sizeof(arr1)/sizeof(arr1[0]);
+  int y = sizeof(arr2)/sizeof(arr2[0]);
+  int i = 0, j = 0, k = 0;
+
+  //traverse both arrays
+  while(i < x && j < y){
+    if(arr1[i] < arr2[j])           //Check if the current element in the first array 
+      arr3[k++] = arr1[i++];        //is smaller than the current element in second array
+    else                            //Store which one is smaller
+      arr3[k++] = arr2[j++];
+  }
+
+  while(i < x)
+    arr3[k++] = arr1[i++];
+
+  while(j < y)
+    arr3[k++] = arr2[j++];
+}
+
 int select(int m, int n, int k)
 {
     int result= 1000;//just a placeholder to test file output
