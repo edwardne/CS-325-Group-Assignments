@@ -2,14 +2,17 @@
 #include<fstream>
 #include<string>
 #include <sstream>
+#include <byteswap.h>
+
 using namespace std;
+
 
 struct datFile{
       int subArrays; //number of sub arrays, also known as 'm'
       int k; //kth smallest numbers
       int length; //described as n in assignment description
       string fileName;
-      int values []; //should probably be dynamic
+      int* values; //should probably be dynamic
 };
 
 //merging two sorted arrays into one sorted arrays
@@ -85,26 +88,31 @@ int main()
     //Reading binary file. Note: use console command "xxd 1.dat" toread values of dat file onconsole
     //the block of code simply prints the first 10 numbers, will need to generalize it
     ifstream binaryFile;
-    binaryFile.open("1.dat", ios::in | ios::out | ios::binary);
-    unsigned int c;
-    unsigned char y;
+    int y;
+    unsigned char buf[4];
 
-    for(int i = 0; i < 10; i++){
-          binaryFile.read(reinterpret_cast<char *>(&y), 1);
-          cout << (int)y << endl;
-    }
     datFile dats[arr[0]]; //creates an array of size m (number of sub arrays)
-    for(int i = 0; i < arr[0];  i++){
+    for(int i = 0; i < arr[0];  i++){ //loop through every .dat file
           dats[i].subArrays =arr[0];
           dats[i].k = arr[2];
           dats[i].length = arr[1];
-
           std::stringstream sstm;
           sstm << i+1 << ".dat";
           dats[i].fileName = sstm.str();
-        //dats[i].fileName=  itoa(i) + ".dat";
-
+          dats[i].values = new int[dats[i].length];
           cout << "File name: " << dats[i].fileName << endl;
+          binaryFile.open(dats[i].fileName.c_str(), ios::in | ios::out | ios::binary);
+          for(int k = 0; k <  dats[i].length; k++){ //will loop through every element in the array for each dat file
+
+                binaryFile.read(reinterpret_cast<char *>(buf), sizeof(int));
+                unsigned int b4 = (buf[0] << 24) + (buf[1]) + (buf[2])+ (buf[3]);
+                unsigned int b2 = (buf[0] << 8) + (buf[1]);
+                y = b4 + b2;
+                dats[i].values[k] = y;
+               //cout  << dats[i].values[k]<< endl; //<------UNCOMMENT THIS IF WANT TO SEE ARRAY
+          }
+          binaryFile.close();
+
    }
 
     //store m n and k retrieved from input files
