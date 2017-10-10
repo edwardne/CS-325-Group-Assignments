@@ -6,6 +6,14 @@
 
 using namespace std;
 
+int binarySearch(int * values, int val, int beginning, int ending);
+int findK(struct datFile*, int k);
+void truncate(struct datFile*, int k);
+int largestArray(struct datFile*);
+int binarySearch(int[], int, int);
+
+
+
 
 struct datFile{
       int subArrays; //number of sub arrays, also known as 'm'
@@ -13,8 +21,83 @@ struct datFile{
       int length; //described as n in assignment description
       string fileName;
       int* values; //should probably be dynamic
+      int beginning;
+      int ending; //last index of array, will change
+      int middlePoint; //not exactly a middle point for every array. It's the 'm ' we marked on the paper
 };
 
+int binarySearch(int data[], int val, int beginning, int ending){
+      int low = beginning;
+      int high = ending;
+
+      while(low < high){
+            int mid = (low + high) / 2;
+            if(data[mid] < val){
+                  low = mid + 1;
+            }else{
+                  high = mid;
+            }
+      }
+
+      return low;
+}
+
+//used for step 2, will return first largest array
+int largestArray(struct datFile* dats){
+      int n_subarrays = dats[0].subArrays;
+      int largestArrayIndex = 0;
+      int largestLength = 0;
+      for(int i = 0; i < n_subarrays; i++){
+            if(dats[i].length > largestLength){
+                  largestArrayIndex = i;
+            }
+      }
+      return largestArrayIndex;
+
+}
+
+//for step 1
+void truncate(struct datFile* dats, int k){
+      int n_subarrays = dats[0].subArrays;
+      for(int i = 0; i < n_subarrays; i++){
+            if(dats[i].length > k){
+                  dats[i].ending = k;
+                  dats[i].length = dats[i].ending - dats[i].beginning + 1;
+            }
+      }
+}
+
+int findK(struct datFile* dats, int k){
+      truncate(dats, dats[0].k);
+      int largestArr = largestArray(dats);
+      cout << "Largest array is: " << largestArr << endl;
+      int m = dats[largestArr].length / 2 + 1; //m is the middle index
+      cout << "m is : " << m << endl;
+      for(int i = 0; i < dats[0].subArrays; i++){
+            //do binary search for each  except the one with m
+            if(i != largestArr){
+                  //dats[i].middlePoint = binarySearch(dats, m, )
+                  dats[i].middlePoint = binarySearch(dats[i].values, m, dats[i].beginning, dats[i].ending);
+                  //do binary search
+            }else{
+                  dats[largestArr].middlePoint = m;
+            }
+      }
+
+      /*
+      for(int i = 0; i < dats[0].subArrays; i++){
+            for(int k = 0; k <  dats[i].length; k++){ //will loop through every element in the array for each dat file
+
+                cout  << dats[i].values[k]<< endl; //<------UNCOMMENT THIS IF WANT TO SEE ARRAY
+            }
+      }*/
+
+      //truncate(dats*, dats.k); //step 1, truncate if any have length > k
+      return 0;
+}
+
+
+/*
 //merging two sorted arrays into one sorted arrays
 void merge(int arr1[], int arr2[], int arr3[]){
   int x = sizeof(arr1)/sizeof(arr1[0]);
@@ -34,7 +117,7 @@ void merge(int arr1[], int arr2[], int arr3[]){
 
   while(j < y)
     arr3[k++] = arr2[j++];
-}
+}*/
 
 int select(int m, int n, int k)
 {
@@ -91,7 +174,9 @@ int main()
     int y;
     unsigned char buf[4];
 
-    datFile dats[arr[0]]; //creates an array of size m (number of sub arrays)
+    struct datFile* dats;
+    dats = new datFile[arr[0]];
+    //datFile dats[arr[0]]; //creates an array of size m (number of sub arrays)
     for(int i = 0; i < arr[0];  i++){ //loop through every .dat file
           dats[i].subArrays =arr[0];
           dats[i].k = arr[2];
@@ -100,6 +185,8 @@ int main()
           sstm << i+1 << ".dat";
           dats[i].fileName = sstm.str();
           dats[i].values = new int[dats[i].length];
+          dats[i].beginning = 0;
+          dats[i].ending = arr[1] -1;
           cout << "File name: " << dats[i].fileName << endl;
           binaryFile.open(dats[i].fileName.c_str(), ios::in | ios::out | ios::binary);
           for(int k = 0; k <  dats[i].length; k++){ //will loop through every element in the array for each dat file
@@ -109,11 +196,13 @@ int main()
                 unsigned int b2 = (buf[0] << 8) + (buf[1]);
                 y = b4 + b2;
                 dats[i].values[k] = y;
-               //cout  << dats[i].values[k]<< endl; //<------UNCOMMENT THIS IF WANT TO SEE ARRAY
+              cout  << dats[i].values[k]<< endl; //<------UNCOMMENT THIS IF WANT TO SEE ARRAY
           }
-          binaryFile.close();
+         // binaryFile.close();
 
    }
+
+   findK(dats, dats->k);
 
     //store m n and k retrieved from input files
     m = arr[0];
