@@ -12,7 +12,7 @@ void merge(int arr1[], int arr2[], int arr3[]){
 
   //traverse both arrays
   while(i < x && j < y){
-    if(arr1[i] < arr2[j])           //Check if the current element in the first array 
+    if(arr1[i] < arr2[j])           //Check if the current element in the first array
       arr3[k++] = arr1[i++];        //is smaller than the current element in second array
     else                            //Store which one is smaller
       arr3[k++] = arr2[j++];
@@ -74,6 +74,25 @@ int main()
 
     File.close();
 
+    //Reading binary file. Note: use console command "xxd 1.dat" toread values of dat file onconsole
+    //the block of code simply prints the first 10 numbers, will need to generalize it
+    ifstream binaryFile;
+    binaryFile.open("1.dat", ios::in | ios::out | ios::binary);
+    unsigned int c;
+    unsigned char y;
+
+    for(int i = 0; i < 10; i++){
+          binaryFile.read(reinterpret_cast<char *>(&y), 1);
+          cout << (int)y << endl;
+    }/*
+    for(int i = 0; i < 10; i++){
+          binaryFile >> c;
+          cout << c << endl;
+    }
+
+    binaryFile.read(reinterpret_cast<char*>(&c), sizeof(unsigned int));
+    cout << "c:" << c << endl;*/
+
     //store m n and k retrieved from input files
     m = arr[0];
     n = arr[1];
@@ -84,7 +103,7 @@ int main()
     cout << "k is: " << arr[2] << "\n";
 
     result = select(m,n,k);
-    cout << k << "th smallest element is: " << result;
+    cout << k << "th smallest element is: " << result << endl;
 
     //print result of select() to output file
     ofstream outfile;
