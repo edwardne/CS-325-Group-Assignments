@@ -1,8 +1,16 @@
 #include<iostream>
 #include<fstream>
 #include<string>
-
+#include <sstream>
 using namespace std;
+
+struct datFile{
+      int subArrays; //number of sub arrays, also known as 'm'
+      int k; //kth smallest numbers
+      int length; //described as n in assignment description
+      string fileName;
+      int values []; //should probably be dynamic
+};
 
 //merging two sorted arrays into one sorted arrays
 void merge(int arr1[], int arr2[], int arr3[]){
@@ -84,14 +92,20 @@ int main()
     for(int i = 0; i < 10; i++){
           binaryFile.read(reinterpret_cast<char *>(&y), 1);
           cout << (int)y << endl;
-    }/*
-    for(int i = 0; i < 10; i++){
-          binaryFile >> c;
-          cout << c << endl;
     }
+    datFile dats[arr[0]]; //creates an array of size m (number of sub arrays)
+    for(int i = 0; i < arr[0];  i++){
+          dats[i].subArrays =arr[0];
+          dats[i].k = arr[2];
+          dats[i].length = arr[1];
 
-    binaryFile.read(reinterpret_cast<char*>(&c), sizeof(unsigned int));
-    cout << "c:" << c << endl;*/
+          std::stringstream sstm;
+          sstm << i+1 << ".dat";
+          dats[i].fileName = sstm.str();
+        //dats[i].fileName=  itoa(i) + ".dat";
+
+          cout << "File name: " << dats[i].fileName << endl;
+   }
 
     //store m n and k retrieved from input files
     m = arr[0];
