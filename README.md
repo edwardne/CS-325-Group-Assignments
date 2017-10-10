@@ -1,19 +1,22 @@
 # CS-325-Group-Assignments
 
-Idea:
-1. Read the array from binary file.
-2. Put them into m arrays consisting of n elements
-3. Use Merge function in MergeSort to Merge all m arrays
-4. Find K with for loop <-can probably just do array[k-1] since the merged array would be in order, but other than that, I think the algorithm looks fine.
-5. Print results
+New Idea:
+//find middle index on each array
+  int mid = (n/2)+1
 
-Is it satisfy running time output? <-I think so? Merging an array is probably a log n, and since there are m arrays, you get mlog n.
-
-
-Edit:
-Idea:
-1. Read the array from binary file.
-2. Put them into m arrays consisting of n elements
-3. for i=1 to m-1, Use Merge function in MergeSort to Merge all m arrays
-4. Find K with arr[k-1]
-5. Print results
+//find kth element
+if k == 1
+  compare and find the smallest elements in each arrays
+  //Ex: arr 1 = 9
+  //    arr 2 = 5
+  //    arr 3 = 7
+  //    5 is the smallest
+if k <= mid
+  compare and find the smallest elements in front of each arrays
+  recursively eliminate the smallest elements and k-- until k == 1
+else
+  Remove the half elements for each arrays for i= 0 to mid-1
+  Set k = k-3*(mid-1)
+  Recurse until k == 1
+  
+  
