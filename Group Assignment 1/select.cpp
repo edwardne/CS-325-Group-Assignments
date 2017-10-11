@@ -58,13 +58,28 @@ int largestArray(struct datFile* dats){
 //used to truncate when considering L's size
 void truncateL(struct datFile* dats, int newBeginning, int newEnd, int subtract){
       for(int i = 0; i < dats[0].subArrays; i++){
-            int difference = dats[i].ending  - dats[i].beginning + newEnd - newBeginning;
+            //cout << "DATS[0].K IS: " << dats[0].k << endl;
+            //int difference = dats[i].ending  - dats[i].beginning - newEnd - newBeginning;
+            int oldLength = dats[i].ending - dats[i].beginning;
+            int newLength = newEnd - newBeginning;
+            int difference = oldLength - newLength;
+            dats[i].length = newLength;
             dats[i].beginning = newBeginning;
             dats[i].ending = newEnd;
             dats[i].length = dats[i].ending - dats[i].beginning + 1;
             //SOMETHING IS WRONG HERE WITH SUBTRACTING K. K SHOULD BE SUBTRACTED IF THE ELEMENTS IN THE LOWER HALF ARE BEING CUT OFF
-            dats[i].k -= difference;
-      /*      for(int j = 0; j < dats[0].subArrays; j++){
+            if(subtract == 1){
+                  cout << "Dats[0].k " << dats[0].k << " - dats[i].L" << dats[i].L << endl;
+                  dats[0].k -= dats[i].L;
+
+            }
+
+
+            /*
+            cou
+            cout << "dats[i].ending " << dats[i].ending << "  - dats[i].beggining  " << dats[i].beginning << " +  newEnd " << newEnd << " - newBeginning " << newBeginning << endl;
+            cout << "Difference is: " << difference << endl;
+            for(int j = 0; j < dats[0].subArrays; j++){
                   if(i != j && subtract == 1){
                         cout << "Subtracting: " << difference << endl;
                         dats[j].k -= difference;
@@ -77,9 +92,10 @@ void truncateK(struct datFile* dats, int k){
       int n_subarrays = dats[0].subArrays;
       for(int i = 0; i < n_subarrays; i++){
             if(dats[i].length > k){
-                  dats[i].ending = k;
-                  dats[i].length = dats[i].ending - dats[i].beginning + 1;
+                  dats[i].ending = k - 1;
+                  dats[i].length = dats[i].ending - dats[i].beginning;
             }
+            cout << "dats[" << i << "] new ending  is " << dats[i].ending << endl;
       }
 }
 
@@ -119,25 +135,32 @@ int findK(struct datFile* dats, int k){
       }else{
             truncateK(dats, dats[0].k);
             int largestArr = largestArray(dats);
-            cout << "Largest array is: " << largestArr << endl;
-            int m = dats[largestArr].length / 2 + 1; //m is the middle index
-            cout << "m is : " << m << endl;
+           cout << "Largest array is: " << largestArr << endl;
+            int m = (dats[largestArr].ending) / 2 ; //m is the middle index
+            cout << "M is " << m  << endl;
+            //cout << "m is : " << m << endl;
             for(int i = 0; i < dats[0].subArrays; i++){ //loop for every array
                   //do binary search for each  except the one with m
                   if(i != largestArr){
                         //dats[i].middlePoint = binarySearch(dats, m, )
-                        dats[i].middlePoint = binarySearch(dats[i].values, m, dats[i].beginning, dats[i].ending);
+                        //cout << "going to find binary search " << endl;
+                        dats[i].middlePoint = binarySearch(dats[i].values, dats[largestArr].values[m], dats[i].beginning, dats[i].ending);
+                        //cout << binarySearch(dats[i].values, dats[largestArr].values[m], dats[i].beginning, dats[i].ending) << " <--- binary search " << endl;
                         //do binary search
                   }else{
                         dats[largestArr].middlePoint = m;
                   }
+                  cout << "dats[i].middlePoint " << dats[largestArr].middlePoint << endl;
                   dats[i].L = dats[i].middlePoint - dats[i].beginning;
-                  cout << "Less than: " << dats[i].L << endl;
-                  if(k < dats[i].L){ //truncate off upper half. just use bottom half.
+                  //cout << "Less than: " << dats[i].L << endl;
+                  cout << "dats[i].k: " << dats[i].k << " , dats[i].L " << dats[i].L << endl;
+
+
+                  if(dats[i].k < dats[i].L){ //truncate off upper half. just use bottom half.
                         truncateL(dats, dats[i].beginning, dats[i].middlePoint, 1);
 
                   }else{//truncate off lower half, so just use top half
-                        truncateL(dats, dats[i].middlePoint, dats[i].ending, 0);
+                        truncateL(dats, dats[i].middlePoint, dats[i].ending, 1);
                   }
                   return findK(dats, dats[0].k);
             }
