@@ -7,6 +7,12 @@ using namespace std;
 
 int n;
 
+//max function
+int max(int a, int b)
+{
+    return (a < b)? b:a;
+}
+
 int Vankin(int board[100][100])
 {
     int score = 0;
