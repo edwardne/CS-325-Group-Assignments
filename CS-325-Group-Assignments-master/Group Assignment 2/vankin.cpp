@@ -28,7 +28,7 @@ int Vankin(int board[100][100])
         {
             //I know this part isn't fully correct yet
             VMile[i][j] = board[i][j] + max(board[i+1][j], board[i][j+1]);//maximum possible score
-            //VMile[i][j] = board[i,j] + max{VMile[i+1][j], VMile[i][j+1]}
+            //VMile[i][j] = board[i][j] + max(VMile[i+1][j], VMile[i][j+1]);
 
             score = max(score, VMile[i][j]); //compare previous score and current score
         }
