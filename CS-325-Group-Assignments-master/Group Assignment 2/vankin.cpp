@@ -1,92 +1,74 @@
-#include<iostream>
-#include<fstream>
-#include<string>
-#include <sstream>
+#include <string>
+#include <stdio.h>
 #include <math.h>
 using namespace std;
 
-int n;
 
 //max function
-int max(int a, int b)
+int max(int a, int b, int c)
 {
-    return (a < b)? b:a;
+	if ((a > b) && (a > c))
+		return a;
+	else if ((b > a) && (b > c))
+		return b;
+	else
+		return c;
 }
 
-int Vankin(int board[100][100])
+int Vankin(int board[2][2], int n)
 {
-    int score = 0;
-    int VMile[100][100];
-    for(int i = n+1; i>=1; i--)
-    {
-        VMile[i][n+1] = 0;
-    }
-    for(int j = n; j>=1; j--)
-    {
-        VMile[n+1][j] = 0;
-        for(int i=n; i>=1; i--)
-        {
-            //I know this part isn't fully correct yet
-            VMile[i][j] = board[i][j] + max(board[i+1][j], board[i][j+1]);//maximum possible score
-            //VMile[i][j] = board[i][j] + max(VMile[i+1][j], VMile[i][j+1]);
+	int score;
+	int VMile[3][3];			 //create a new array for scoring
+	
+	for (int i = 0; i <= n; i++)
+	{
+		for (int j = 0; j <= n; j++)
+		{
+			VMile[i][j] = 0;		//fill array with 0
+		}
+	}
+	for (int i = 1; i <= n; i++)	//iterate for each column
+	{
+		for (int j = 1; j < n+1; j++)	//iterate for each row
+		{
+			VMile[i][j] += max(board[i - 1][j - 1], (board[i - 1][j - 1] + VMile[i][j - 1]), (board[i - 1][j - 1] + VMile[i - 1][j]));
+			//fill at index j,k the maximum value of the number itself, + top score, or + left score	
+			//int z = VMile[i][j];
+			//printf("%d\n", z);
+		}
+	}
 
-            score = max(score, VMile[i][j]); //compare previous score and current score
-        }
-    }
-    return score;
+	int tempR = VMile[1][n+1];	//take the upper right element
+	printf("%d\n", tempR);
+	int tempB = VMile[n+1][1];	//take the bottom left element
+	printf("%d\n", tempB);
+	for (int a = 1; a <= n - 1; a++)
+	{
+		if (tempR < VMile[a + 1][n + 1])	//compare the upper right element with the bottom element.
+			tempR = VMile[a + 1][n + 1];	//if bigger, take the bigger one
+	}
+
+	for (int b = 1; b <= n - 1; b++)
+	{
+		if (tempB < VMile[n + 1][b + 1])	//compare the bottom left element with the right element
+			tempB = VMile[n + 1][b + 1];	//if bigger, take the bigger one
+	}
+
+	if (tempB == tempR)			//if both score are the same, take one of them.
+		score = tempB;			//else pick the highest one
+	else if (tempB > tempR)
+		score = tempB;
+	else
+		score = tempR;
+
+	return score;
 }
 
 int main()
 {
-    int nread = 0, i = 1, j = 1, counter =0;
-    int board[100][100];//we will probably have to do this a different way
-    int result, x;
-
-    ifstream File;
-    File.open("input.txt");
-
-    if(!File.is_open())
-    {
-        cout<<"Couldn't open file"<<endl;
-        return 0;
-    }
-
-    while(File>>x)
-    {
-
-
-        if(nread==0)
-        {
-            n = x;
-            cout<< "n is: "<<n<<endl;
-            nread++;
-        }
-        else
-        {
-            //skip over any commas in input file
-            if (File.peek() == ',')
-            File.ignore();
-
-            //calculate position of values on the game board
-            j = (counter % n);
-            i = floor(counter/n);
-
-            //store value in spot in board array
-            board[i][j] = x;
-            cout<<"board["<<i<<"]["<<j<<"]: "<<board[i][j]<<endl;
-            counter++;
-        }
-    }
-
-    File.close();
-
-    result = Vankin(board);
-    cout<<"Highest score: "<<result<<endl;
-
-    //print result to output file
-    ofstream outfile;
-    outfile.open("output.txt");
-    outfile << result;
-
-    return 0;
+	int n = 2;
+	int board[2][2] = { { 5,-2 },{ -3,1 } };
+	int max = Vankin(board, n);
+	printf("Highest score = %d", max);
+	return 0;
 }
