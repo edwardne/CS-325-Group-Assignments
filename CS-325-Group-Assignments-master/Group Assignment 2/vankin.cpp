@@ -27,7 +27,7 @@ int gte(int a, int b)
 
 int Vankin(int board[2][2], int n)
 {
-	int score;
+	int score= 0;
 	int VMile[3][3];			 //change this to suit n variables
 	
 	for (int i = 0; i <= n; i++)
