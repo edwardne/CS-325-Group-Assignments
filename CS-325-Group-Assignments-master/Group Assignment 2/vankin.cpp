@@ -1,65 +1,100 @@
-#include <string>
-#include <stdio.h>
+#include<iostream>
+#include<fstream>
+#include<string>
+#include <sstream>
 #include <math.h>
 using namespace std;
 
+int n;
 
-//max function
-int max(int a, int b, int c)
-{
-	if ((a > b) && (a > c))
-		return a;
-	else if ((b > a) && (b > c))
-		return b;
-	else
-		return c;
-}
-
-int gte(int a, int b)
+int max(int a, int b)
 {
 	if (a == b)
 		return a;
-	else if(a > b)
+	else if (a > b)
 		return a;
 	else
 		return b;
 }
 
-int Vankin(int board[2][2], int n)
+int Vankin(int *board)
 {
-	int score= 0;
-	int VMile[3][3];			 //change this to suit n variables
-	
-	for (int i = 0; i <= n; i++)
+	int score = 0;
+	int* VMile = NULL;
+	VMile = new int[(n + 1) * (n + 1)];//we will probably have to do this a different way
+	for (int i = n; i >= 0; i--)
 	{
-		for (int j = 0; j <= n; j++)
-		{
-			VMile[i][j] = 0;		//fill array with 0
-		}
+		VMile[(i * n) + (n)] = 0;
 	}
-	for (int i = 1; i <= n; i++)	//iterate for each column
+	for (int j = n-1; j >= 0; j--)
 	{
-		for (int j = 1; j <= n; j++)	//iterate for each row
+		VMile[((n) * n) + j] = 0;
+		for (int i = n-1; i >= 0; i--)
 		{
-			VMile[i][j] += max(board[i - 1][j - 1], (board[i - 1][j - 1] + VMile[i][j - 1]), (board[i - 1][j - 1] + VMile[i - 1][j]));
-			//fill at index j,k the maximum value of the number itself, + top score, or + left score	
-			if (i == n || j == n)
-			{
-				int z = VMile[i][j];
-				//printf("%d\n", z);
-				score = gte(score, z);
-			}
-		}
-	}
+			cout << board[((i * n) - 1) + j] << endl;
 
+			//FIXED CALCULATION
+			VMile[(i * n) + j] = board[(i * n) + j] + max(VMile[((i + 1) * n) + j], VMile[(i * n) + (j + 1)]);//maximum possible score
+			//int z = VMile[(i * n) + j];
+			//printf("%d", z);
+			score = max(score, VMile[(i * n) + j]); //compare previous score and current score
+		}
+	}
 	return score;
 }
 
 int main()
 {
-	int n = 2;
-	int board[2][2] = { { 5,-2 },{ -3,1 } };
-	int max = Vankin(board, n);
-	printf("Highest score = %d", max);
+	int nread = 0, i = 1, j = 1, counter = 0, value = 0;
+	int* board = NULL;
+	board = new int[n * n];//we will probably have to do this a different way
+	int result, x;
+
+	ifstream File;
+	File.open("input.txt");
+
+	if (!File.is_open())
+	{
+		cout << "Couldn't open file" << endl;
+		return 0;
+	}
+
+	while (File >> x)
+	{
+
+
+		if (nread == 0)
+		{
+			n = x;
+			cout << "n is: " << n << endl;
+			nread++;
+		}
+		else
+		{
+			//skip over any commas in input file
+			if (File.peek() == ',')
+				File.ignore();
+
+			//calculate position of values on the game board
+			j = (counter % n);
+			i = (int)floor(counter / n);
+
+			//store value in spot in board array
+			board[(i * n) + j] = x;
+			cout << "board[" << i << "][" << j << "]: " << board[(i * n) + j] << endl;
+			counter++;
+		}
+	}
+
+
+	result = Vankin(board);
+	cout << "Highest score: " << result << endl;
+
+	//print result to output file
+	ofstream outfile;
+	outfile.open("output.txt");
+	outfile << result;
+	File.close();
+
 	return 0;
 }
