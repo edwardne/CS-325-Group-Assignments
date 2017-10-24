@@ -29,12 +29,16 @@ int Vankin(int board[2][2], int n)
 	}
 	for (int i = 1; i <= n; i++)	//iterate for each column
 	{
-		for (int j = 1; j < n+1; j++)	//iterate for each row
+		for (int j = 1; j <= n; j++)	//iterate for each row
 		{
 			VMile[i][j] += max(board[i - 1][j - 1], (board[i - 1][j - 1] + VMile[i][j - 1]), (board[i - 1][j - 1] + VMile[i - 1][j]));
 			//fill at index j,k the maximum value of the number itself, + top score, or + left score	
-			//int z = VMile[i][j];
-			//printf("%d\n", z);
+			if (i == n || j == n)
+			{
+				int z = VMile[i][j];
+				//printf("%d\n", z);
+				score = gt(score, z);
+			}
 		}
 	}
 
