@@ -7,6 +7,26 @@ using namespace std;
 
 int n;
 
+//max function
+int max(int a, int b, int c)
+{
+	if ((a > b) && (a > c))
+		return a;
+	else if ((b > a) && (b > c))
+		return b;
+	else
+		return c;
+}
+
+int gte(int a, int b)
+{
+	if (a == b)
+		return a;
+	else if(a > b)
+		return a;
+	else
+		return b;
+}
 
 
 int Vankin(int *board)
@@ -14,10 +34,13 @@ int Vankin(int *board)
     int score = 0;
     int* VMile = NULL;
     VMile = new int[(n+1) * (n+1)];//we will probably have to do this a different way
-    for(int i = n+1; i>=0; i--)
-    {
-        VMile[(i * n)+(n+1)] = 0;
-    }
+    for (int i = 0; i <= n; i++)
+	{
+		for (int j = 0; j <= n; j++)
+		{
+			VMile[(i*n)+j] = 0;		//fill array with 0
+		}
+	}
     for(int j = n; j>=1; j--)
     {
         VMile[((n+1) * n)+j] = 0;
@@ -31,6 +54,9 @@ int Vankin(int *board)
             score = max(score, VMile[(i * n)+j]); //compare previous score and current score
         }
     }
+
+
+
     return score;
 }
 
