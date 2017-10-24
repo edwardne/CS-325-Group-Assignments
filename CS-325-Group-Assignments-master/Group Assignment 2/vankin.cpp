@@ -7,30 +7,28 @@ using namespace std;
 
 int n;
 
-//max function
-int max(int a, int b)
-{
-    return (a < b)? b:a;
-}
 
-int Vankin(int board[100][100])
+
+int Vankin(int *board)
 {
     int score = 0;
-    int VMile[100][100];
-    for(int i = n+1; i>=1; i--)
+    int* VMile = NULL;
+    VMile = new int[(n+1) * (n+1)];//we will probably have to do this a different way
+    for(int i = n+1; i>=0; i--)
     {
-        VMile[i][n+1] = 0;
+        VMile[(i * n)+(n+1)] = 0;
     }
     for(int j = n; j>=1; j--)
     {
-        VMile[n+1][j] = 0;
-        for(int i=n; i>=1; i--)
+        VMile[((n+1) * n)+j] = 0;
+        for(int i = n-1; i>=0; i--)
         {
-            //I know this part isn't fully correct yet
-            VMile[i][j] = board[i][j] + max(board[i+1][j], board[i][j+1]);//maximum possible score
-            //VMile[i][j] = board[i][j] + max(VMile[i+1][j], VMile[i][j+1]);
+            cout<<board[((i * n)-1)+j]<<endl;
 
-            score = max(score, VMile[i][j]); //compare previous score and current score
+            //I know this part isn't fully correct yet
+            VMile[(i * n)+j] = board[(i * n-1)+j] + max(VMile[((i+1) * n)+j], VMile[(i * n)+(j+1)]);//maximum possible score
+
+            score = max(score, VMile[(i * n)+j]); //compare previous score and current score
         }
     }
     return score;
@@ -38,8 +36,9 @@ int Vankin(int board[100][100])
 
 int main()
 {
-    int nread = 0, i = 1, j = 1, counter =0;
-    int board[100][100];//we will probably have to do this a different way
+    int nread = 0, i = 1, j = 1, counter =0, value=0;
+    int* board = NULL;
+    board = new int[n * n];//we will probably have to do this a different way
     int result, x;
 
     ifstream File;
@@ -72,13 +71,12 @@ int main()
             i = floor(counter/n);
 
             //store value in spot in board array
-            board[i][j] = x;
-            cout<<"board["<<i<<"]["<<j<<"]: "<<board[i][j]<<endl;
+            board[(i * n)+j] = x;
+            cout<<"board["<<i<<"]["<<j<<"]: "<<board[(i * n)+j]<<endl;
             counter++;
         }
     }
 
-    File.close();
 
     result = Vankin(board);
     cout<<"Highest score: "<<result<<endl;
@@ -87,6 +85,7 @@ int main()
     ofstream outfile;
     outfile.open("output.txt");
     outfile << result;
+    File.close();
 
     return 0;
 }
