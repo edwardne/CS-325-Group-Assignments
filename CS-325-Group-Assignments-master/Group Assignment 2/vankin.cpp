@@ -42,29 +42,6 @@ int Vankin(int board[2][2], int n)
 		}
 	}
 
-	int tempR = VMile[1][n+1];	//take the upper right element
-	printf("%d\n", tempR);		//something wrong here, it return 0
-	int tempB = VMile[n+1][1];	//take the bottom left element
-	printf("%d\n", tempB);		// this one return -8912789
-	for (int a = 1; a <= n - 1; a++)
-	{
-		if (tempR < VMile[a + 1][n + 1])	//compare the upper right element with the bottom element.
-			tempR = VMile[a + 1][n + 1];	//if bigger, take the bigger one
-	}
-
-	for (int b = 1; b <= n - 1; b++)
-	{
-		if (tempB < VMile[n + 1][b + 1])	//compare the bottom left element with the right element
-			tempB = VMile[n + 1][b + 1];	//if bigger, take the bigger one
-	}
-
-	if (tempB == tempR)			//if both score are the same, take one of them.
-		score = tempB;			//else pick the highest one
-	else if (tempB > tempR)
-		score = tempB;
-	else
-		score = tempR;
-
 	return score;
 }
 
