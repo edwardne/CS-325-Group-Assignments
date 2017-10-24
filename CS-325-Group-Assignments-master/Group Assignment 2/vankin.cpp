@@ -15,6 +15,16 @@ int max(int a, int b, int c)
 		return c;
 }
 
+int gte(int a, int b)
+{
+	if (a == b)
+		return a;
+	else if(a > b)
+		return a;
+	else
+		return b;
+}
+
 int Vankin(int board[2][2], int n)
 {
 	int score;
@@ -37,7 +47,7 @@ int Vankin(int board[2][2], int n)
 			{
 				int z = VMile[i][j];
 				//printf("%d\n", z);
-				score = gt(score, z);
+				score = gte(score, z);
 			}
 		}
 	}
