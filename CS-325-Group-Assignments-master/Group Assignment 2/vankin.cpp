@@ -20,7 +20,7 @@ int main()
     }
     int n2= n + 1;
 
-    int board[n][n];
+    int board[n][n];				//cannot compile because n and n2 is not a constant value
     int VMile[n2][n2];
 
     for (int i = 0; i <= n; i++)
