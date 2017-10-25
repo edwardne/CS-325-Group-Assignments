@@ -8,24 +8,25 @@ using namespace std;
 
 int main()
 {
-    int result, x, k, val, n;
+    int result, k, val, n;
 
     FILE* fp;
     fp = fopen("input.txt", "r");
     fscanf(fp, "%d", &n);
-    if(n > 1000 || n < 0)
+    if((n > 1000) || (n < 0))
     {
         perror("ERROR: n is too large");
         exit(1);
+        return 1;
     }
     int n2= n + 1;
 
     int board[n][n];
     int VMile[n2][n2];
 
-    for (int i = 0; i <= n; i++)
+    for (int i = 0; i < n; i++)
 	{
-		for (int j = 0; j <= n; j++)
+		for (int j = 0; j < n; j++)
 		{
 			board[i][j] = NULL;		//empty array
 		}
@@ -36,9 +37,8 @@ int main()
 		for (int j = 0; j < n2; j++)
 		{
 			VMile[i][j] = 0;		//empty array
-			cout<<VMile[i][j] <<endl;
+			//cout<<VMile[i][j] <<endl;
 		}
-
 	}
 
     for(int i=0; ;i++)
@@ -52,7 +52,7 @@ int main()
             }
 
              board[i][j] = val;
-             cout<<"["<<i<<"]["<<j<<"] "<<board[i][j]<<endl;
+             //cout<<"["<<i<<"]["<<j<<"] "<<board[i][j]<<endl;
 
             if((k=fgetc(fp)) == '\n')
             {
@@ -74,8 +74,9 @@ int main()
             VMile[i][j] = board[i][j] + max(VMile[i+1][j], VMile[i][j+1]);//maximum possible score
             //cout<<"V: "<< VMile[i][j]<<endl;
             score = max(score, VMile[i][j]); //compare previous score and current score
-            cout<<"Score: "<< score<<endl;
+
         }
+        //out<<"Score: "<< score<<endl;
     }
     cout<<"Highest score: "<<score<<endl;
 
