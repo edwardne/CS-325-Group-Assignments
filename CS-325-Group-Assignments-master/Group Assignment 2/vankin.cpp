@@ -3,115 +3,88 @@
 #include<string>
 #include <sstream>
 #include <math.h>
+#include <stdlib.h>
 using namespace std;
 
-int n;
-
-//max function
-int max(int a, int b, int c)
+int main()
 {
-	if ((a > b) && (a > c))
-		return a;
-	else if ((b > a) && (b > c))
-		return b;
-	else
-		return c;
-}
+    int result, x, k, val, n;
 
-int gte(int a, int b)
-{
-	if (a == b)
-		return a;
-	else if(a > b)
-		return a;
-	else
-		return b;
-}
+    FILE* fp;
+    fp = fopen("input.txt", "r");
+    fscanf(fp, "%d", &n);
+    if(n > 1000 || n < 0)
+    {
+        perror("ERROR: n is too large");
+        exit(1);
+    }
+    int n2= n + 1;
 
+    int board[n][n];
+    int VMile[n2][n2];
 
-int Vankin(int *board)
-{
-    int score = 0;
-    int* VMile = NULL;
-    VMile = new int[(n+1) * (n+1)];//we will probably have to do this a different way
     for (int i = 0; i <= n; i++)
 	{
 		for (int j = 0; j <= n; j++)
 		{
-			VMile[(i*n)+j] = 0;		//fill array with 0
+			board[i][j] = NULL;		//empty array
 		}
 	}
-    for(int j = n; j>=1; j--)
+
+	for (int i = 0; i < n2; i++)
+	{
+		for (int j = 0; j < n2; j++)
+		{
+			VMile[i][j] = 0;		//empty array
+			cout<<VMile[i][j] <<endl;
+		}
+
+	}
+
+    for(int i=0; ;i++)
     {
-        VMile[((n+1) * n)+j] = 0;
+        for(int j=0; ;j++)
+        {
+
+            if(fscanf(fp, "%d", &val) == -1)
+            {
+                goto end;
+            }
+
+             board[i][j] = val;
+             cout<<"["<<i<<"]["<<j<<"] "<<board[i][j]<<endl;
+
+            if((k=fgetc(fp)) == '\n')
+            {
+                break;
+            }
+
+        }
+    }
+    end:
+
+    int score = 0;
+
+    for(int j = n-1; j>=0; j--)
+    {
+        VMile[n][j] = 0;
         for(int i = n-1; i>=0; i--)
         {
-            cout<<board[((i * n)-1)+j]<<endl;
 
-            //I know this part isn't fully correct yet
-            VMile[(i * n)+j] = board[(i * n-1)+j] + max(VMile[((i+1) * n)+j], VMile[(i * n)+(j+1)]);//maximum possible score
-
-            score = max(score, VMile[(i * n)+j]); //compare previous score and current score
+            VMile[i][j] = board[i][j] + max(VMile[i+1][j], VMile[i][j+1]);//maximum possible score
+            //cout<<"V: "<< VMile[i][j]<<endl;
+            score = max(score, VMile[i][j]); //compare previous score and current score
+            cout<<"Score: "<< score<<endl;
         }
     }
-
-
-
-    return score;
-}
-
-int main()
-{
-    int nread = 0, i = 1, j = 1, counter =0, value=0;
-    int* board = NULL;
-    board = new int[n * n];//we will probably have to do this a different way
-    int result, x;
-
-    ifstream File;
-    File.open("input.txt");
-
-    if(!File.is_open())
-    {
-        cout<<"Couldn't open file"<<endl;
-        return 0;
-    }
-
-    while(File>>x)
-    {
-
-
-        if(nread==0)
-        {
-            n = x;
-            cout<< "n is: "<<n<<endl;
-            nread++;
-        }
-        else
-        {
-            //skip over any commas in input file
-            if (File.peek() == ',')
-            File.ignore();
-
-            //calculate position of values on the game board
-            j = (counter % n);
-            i = floor(counter/n);
-
-            //store value in spot in board array
-            board[(i * n)+j] = x;
-            cout<<"board["<<i<<"]["<<j<<"]: "<<board[(i * n)+j]<<endl;
-            counter++;
-        }
-    }
-
-
-    result = Vankin(board);
-    cout<<"Highest score: "<<result<<endl;
+    cout<<"Highest score: "<<score<<endl;
 
     //print result to output file
     ofstream outfile;
     outfile.open("output.txt");
-    outfile << result;
-    File.close();
+    outfile << score;
+
+    outfile.close();
 
     return 0;
 }
