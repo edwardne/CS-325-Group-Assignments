@@ -67,7 +67,7 @@ int main()
 
     for(int j = n-1; j>=0; j--)
     {
-        VMile[n][j] = 0;
+        VMile[n][j] = 0;				//dont think u need this since the array is already emptied above
         for(int i = n-1; i>=0; i--)
         {
 
